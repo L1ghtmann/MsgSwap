@@ -1,0 +1,9 @@
+Package: me.lightmann.msgswap
+Name: MsgSwap
+Depends: mobilesubstrate, firmware (>= 11.0)
+Version: 2.0.0
+Architecture: iphoneos-arm
+Description: A more accessible way to send photos in iMessage.
+Maintainer: Lightmann
+Author: Lightmann
+Section: Tweaks
