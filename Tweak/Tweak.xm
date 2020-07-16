@@ -46,8 +46,8 @@ BOOL collectionViewMade = NO;
 		[_collectionView setDataSource:self];
 		[_collectionView setDelegate:self];
 		self.collectionView = _collectionView;
-		[_collectionView registerClass:%c(CKBrowserPluginCell) forCellWithReuseIdentifier:@"cellIdentifier"];
 		_collectionView.scrollEnabled = NO;
+		//_collectionView.allowsMultipleSelection = YES; //can tap to unselect cell/hide outline (alt to my fix)
 		[self addSubview:_collectionView];
 		collectionViewMade = YES;
 
@@ -57,7 +57,6 @@ BOOL collectionViewMade = NO;
 		self.clipsToBounds = YES;
 		self.hideShinyStatus = YES;
 		self.showBorders = YES;
-		self.toggleBordersOnInterfaceStyle = YES;
 		self.minifiesOnSelection = YES;
 		self.snapshotVerticalOffset = -0.5;
 		

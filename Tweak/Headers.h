@@ -30,12 +30,6 @@
 @interface CKAppStripLayout : UICollectionViewLayout
 @end
 
-@protocol CKAppStripPredictiveTypeTransition <NSObject>
-@end
-
-@interface CKAppStripPredictiveTypeSimpleFadeTransition : NSObject <CKAppStripPredictiveTypeTransition>
-@end
-
 @interface CKBrowserSwitcherFooterView : UIView{
 	//UICollectionView* _collectionView; 
 	UIView* _visibleView;
@@ -55,8 +49,8 @@
 @property (assign,nonatomic) double snapshotVerticalOffset;           
 @end
 
-@interface CKEntryViewButton : UIView
-@property (nonatomic,retain) UIButton * button;
+@interface CKEntryViewButton : UIButton //: UIView (iOS13) -- : UIButton (iOS12)
+@property (nonatomic,retain) UIButton * button; //iOS13
 @end
 
 @interface CKMessageEntryContentView : UIView
