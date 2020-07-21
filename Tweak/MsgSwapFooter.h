@@ -3,6 +3,7 @@
 
 @interface MsgSwapFooter : CKBrowserSwitcherFooterView <UICollectionViewDelegate, UICollectionViewDataSource, UIGestureRecognizerDelegate>
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section;
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView;
 - (CKBrowserPluginCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath;
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath;
 -(void)clickCameraButton:(UILongPressGestureRecognizer*)gesture; //method to run cameraButton code when my cell is longpressed 

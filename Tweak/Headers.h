@@ -1,7 +1,6 @@
 #import <UIKit/UIKit.h>
 
 @interface UICollectionView (Private) 
-@property (assign,setter=_setDefaultLayoutMargins:,getter=_defaultLayoutMargins,nonatomic) UIEdgeInsets defaultLayoutMargins;           
 @property (assign,nonatomic) id dataSource;    
 @property (assign,nonatomic) id delegate;      
 @end
@@ -10,15 +9,17 @@
 -(void)setView:(UIView *)arg1;
 @end
 
+@interface PKHostPlugIn : NSObject
+@property (readonly) BOOL active; 
+@end
+
 @interface IMBalloonPlugin : NSObject 
+@property (nonatomic,retain) PKHostPlugIn* plugin;   
 @end
 
 @interface CKBalloonPluginManager : NSObject
 +(id)sharedInstance;
-@property (nonatomic,readonly) NSArray * visibleDrawerPlugins; 
-@property (nonatomic,retain) NSArray * visiblePlugins;                
-@property (nonatomic,retain) NSArray * visibleSwitcherPlugins;     
-@property (nonatomic,retain) NSArray * allPlugins;                 
+@property (nonatomic,readonly) NSArray * visibleDrawerPlugins;         
 @end
 
 @interface CKBrowserPluginCell : UICollectionViewCell
@@ -41,8 +42,7 @@
 @property (assign,nonatomic) id dataSource;     
 @property (assign,nonatomic) BOOL isMagnified;                                         
 @property (assign,nonatomic) BOOL hideShinyStatus;                                     
-@property (assign,nonatomic) BOOL showBorders;
-@property (assign,nonatomic) BOOL toggleBordersOnInterfaceStyle;                    
+@property (assign,nonatomic) BOOL showBorders;                 
 @property (nonatomic,retain) CKAppStripLayout * appStripLayout;                     
 @property (assign,nonatomic) BOOL minifiesOnSelection;                
 @property (assign,nonatomic) BOOL isMinifyingOnTranscriptScroll;                 
@@ -65,6 +65,5 @@
 @property (nonatomic,retain) UIView * buttonAndTextAreaContainerView; 
 @property (nonatomic,retain) UIView * inputButtonContainerView; 
 @property (nonatomic,retain) CKMessageEntryContentView * contentView; 
-@property (nonatomic,readonly) BOOL shouldShowAppStrip; 
-@property (nonatomic,readonly) BOOL showsKeyboardPredictionBar; 
 @end
+

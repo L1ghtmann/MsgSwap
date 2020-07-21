@@ -3,8 +3,14 @@
 
 @implementation MsgSwapFooter
 
+//tells collectionview we only want 1 cell
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
+    return 1;
+}
+
+//and only want one section (if this weren't here 2 sections would be made by default, resulting in 2 cells)
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 1;
 }
 
@@ -14,7 +20,6 @@
     [collectionView registerClass:%c(CKBrowserPluginCell) forCellWithReuseIdentifier:@"photosCell"];
     CKBrowserPluginCell *cell = (CKBrowserPluginCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"photosCell" forIndexPath:indexPath];
     self.cell = cell;
-    [cell setPlugin:((CKBalloonPluginManager*)[%c(CKBalloonPluginManager) sharedInstance]).visibleDrawerPlugins[0]]; 
     return cell;
 }
 

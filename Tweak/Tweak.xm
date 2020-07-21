@@ -7,7 +7,6 @@
 
 BOOL collectionViewMade = NO;
 
-
 //initalize my controller
 %hook SpringBoard
 - (void)applicationDidFinishLaunching:(UIApplication *)application {
@@ -47,7 +46,6 @@ BOOL collectionViewMade = NO;
 		[_collectionView setDelegate:self];
 		self.collectionView = _collectionView;
 		_collectionView.scrollEnabled = NO;
-		//_collectionView.allowsMultipleSelection = YES; //can tap to unselect cell/hide outline (alt to my fix)
 		[self addSubview:_collectionView];
 		collectionViewMade = YES;
 
@@ -74,14 +72,15 @@ BOOL collectionViewMade = NO;
 
 
 %hook CKMessageEntryView
+//hide camera button since that's what's being replaced
 -(void)setPhotoButton:(CKEntryViewButton *)arg1 {
 	%orig;
 
-	//hide camera button since that's what's being replaced
 	[arg1 setHidden:YES];
 }
 
--(void)didMoveToWindow{
+//more footer setup
+-(void)setFrame:(CGRect)frame{
 	%orig;
 
 	MsgSwapFooter *footer = [((MsgSwapController*)[%c(MsgSwapController) sharedInstance]) footer];
@@ -97,8 +96,10 @@ BOOL collectionViewMade = NO;
 	longPress.minimumPressDuration = 0.35f;
 	[footer addGestureRecognizer:longPress];
 
-	//Delays method below so visibleDrawerPlugins has time to populate fully
-	[self performSelector:@selector(populateArrays) withObject:nil afterDelay:0.2];
+	[self.inputButtonContainerView addSubview:[((MsgSwapController*)[%c(MsgSwapController) sharedInstance]) footer]];
+
+	//Adds delay so visibleDrawerPlugins has time to populate fully
+	[self performSelector:@selector(populateArrays) withObject:nil afterDelay:0.1];
 }
 
 //hides my cell when caret ">" is visible
@@ -115,8 +116,7 @@ BOOL collectionViewMade = NO;
 
 %new
 -(void)populateArrays{	
-	//add footer (containing collectionview and cell )to entry view
-	[self.inputButtonContainerView addSubview:[((MsgSwapController*)[%c(MsgSwapController) sharedInstance]) footer]];
+	[[((MsgSwapController*)[%c(MsgSwapController) sharedInstance]) footer].cell setPlugin:((CKBalloonPluginManager*)[%c(CKBalloonPluginManager) sharedInstance]).visibleDrawerPlugins[0]]; 
 }
 %end
 
@@ -132,24 +132,19 @@ BOOL collectionViewMade = NO;
 %end
 
 
-//janky fix for selectionOutline bug on my cell (selectionOutline isn't hidden because BOOL selected doesn't change to NO automatically after de-selection)
+//manually set selected based on state of plugin (still a bit finicky -- works 90-95% of the time w/o delay)
 %hook CKBrowserPluginCell
--(void)setSelected:(BOOL)arg1 {
+-(void)setSelectionFrame:(CGRect)arg1 {
 	%orig;
-
+	
 	if([self.superview.superview isMemberOfClass:%c(MsgSwapFooter)]){
-		if(self.selected == YES){
-			[MSHookIvar<UIImageView *>(self, "_selectionOutline") setHidden:NO];
-
-			double delayInSeconds = 2.0;
-			dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-			dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-				[self setSelected:NO];
-			});
+		if(self.plugin.plugin.active){
+			self.selected = YES;
+			[MSHookIvar<UIImageView *>(self, "_selectionOutline") setAlpha:1];
 		}
-
-		if(self.selected == NO){
-			[MSHookIvar<UIImageView *>(self, "_selectionOutline") setHidden:YES];
+		else{
+			self.selected = NO;
+			[MSHookIvar<UIImageView *>(self, "_selectionOutline") setAlpha:0];
 		}
 	}
 }
