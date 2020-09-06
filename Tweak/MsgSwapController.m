@@ -5,11 +5,11 @@
 
 + (MsgSwapController*)sharedInstance {
 	static dispatch_once_t p = 0;
-    __strong static MsgSwapController* sharedObject = nil;
+    __strong static MsgSwapController* sharedInstance = nil;
     dispatch_once(&p, ^{
-        sharedObject = [[self alloc] init];
+        sharedInstance = [[self alloc] init];
     });
-    return sharedObject;
+    return sharedInstance;
 }
 
 - (MsgSwapFooter*)footer {

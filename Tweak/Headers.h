@@ -25,7 +25,8 @@
 @interface CKBrowserPluginCell : UICollectionViewCell
 -(void)setSelected:(BOOL)arg1 ;
 @property (nonatomic,retain) IMBalloonPlugin * plugin;    
--(void)setPlugin:(IMBalloonPlugin *)arg1 ; 
+-(void)setPlugin:(IMBalloonPlugin *)arg1 ;
+@property (nonatomic,retain) UIImageView * browserImage;     
 @end
 
 @interface CKAppStripLayout : UICollectionViewLayout
@@ -57,7 +58,6 @@
 @end
 
 @interface CKMessageEntryView : UIView
--(void)populateArrays;//custom method called later to allow for plugin arrays to populate
 @property (nonatomic,retain) CKEntryViewButton * photoButton;  //camera
 @property (nonatomic,retain) CKEntryViewButton * browserButton; //opens up appstrip
 @property (nonatomic,retain) CKEntryViewButton * arrowButton;   //caret
