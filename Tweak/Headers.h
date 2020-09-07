@@ -19,7 +19,10 @@
 
 @interface CKBalloonPluginManager : NSObject
 +(id)sharedInstance;
-@property (nonatomic,readonly) NSArray * visibleDrawerPlugins;         
+@property (nonatomic,readonly) NSArray * visibleDrawerPlugins;      
+@end
+
+@interface CKTranscriptCollectionViewController : UIViewController
 @end
 
 @interface CKBrowserPluginCell : UICollectionViewCell

@@ -5,17 +5,14 @@
 #import "Headers.h"
 #import "MsgSwapController.h"
 
+
 //initialize my controller
 %hook SpringBoard
 - (void)applicationDidFinishLaunching:(UIApplication *)application {
     %orig;
 
-	//using a delay to fix the plugin timing issues and the delayed cell formation issues 
-	double delayInSeconds = 0.1;	
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-      [MsgSwapController sharedInstance];
-    });
+    [MsgSwapController sharedInstance];
+    
 }
 %end
 
@@ -32,6 +29,16 @@
     });
 
     return _sharedInstance;
+}
+%end
+
+
+//set cell plugin  
+%hook CKTranscriptCollectionViewController
+-(void)_updateTraitsIfNecessary{
+	%orig;
+
+	[[((MsgSwapController*)[%c(MsgSwapController) sharedInstance]) footer].cell setPlugin:((CKBalloonPluginManager*)[%c(CKBalloonPluginManager) sharedInstance]).visibleDrawerPlugins[0]];
 }
 %end
 
