@@ -69,4 +69,3 @@
 @property (nonatomic,retain) UIView * inputButtonContainerView; 
 @property (nonatomic,retain) CKMessageEntryContentView * contentView; 
 @end
-

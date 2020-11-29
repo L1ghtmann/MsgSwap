@@ -1,4 +1,3 @@
-
 #import "MsgSwapFooter.h"
 
 @implementation MsgSwapFooter
@@ -16,6 +15,12 @@
 - (CKBrowserPluginCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{    
     [collectionView registerClass:%c(CKBrowserPluginCell) forCellWithReuseIdentifier:@"photosCell"];
     CKBrowserPluginCell *cell = (CKBrowserPluginCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"photosCell" forIndexPath:indexPath];
+
+	//Check if device is running a version below iOS 13 since other method (_updateTraitsIfNecessary) doesn't set plugin image for those versions  
+	if(kCFCoreFoundationVersionNumber < 1600) { 
+	  [cell setPlugin:((CKBalloonPluginManager*)[%c(CKBalloonPluginManager) sharedInstance]).visibleDrawerPlugins[0]]; 
+	}
+
 	self.cell = cell;
     return cell;
 }

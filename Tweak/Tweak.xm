@@ -1,26 +1,24 @@
+#import "Headers.h"
+#import "MsgSwapController.h"
+
 //Lightmann
 //Made during COVID-19
 //MsgSwap
 
-#import "Headers.h"
-#import "MsgSwapController.h"
-
 
 //initialize my controller
 %hook SpringBoard
-- (void)applicationDidFinishLaunching:(UIApplication *)application {
+-(void)applicationDidFinishLaunching:(UIApplication *)application {
     %orig;
 
-    [MsgSwapController sharedInstance];
-    
+	[MsgSwapController sharedInstance];
 }
 %end
 
 
 //initialize plugin manager
 %hook CKBalloonPluginManager
-+ (instancetype)sharedInstance
-{
++(instancetype)sharedInstance{
     static id _sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^
