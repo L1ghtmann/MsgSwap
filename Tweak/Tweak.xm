@@ -80,7 +80,45 @@
 	}
 }
 
+//remove stock photo cell from appbar
+-(void)updateAppStripFrame{
+	%orig;
+
+	for(UIView *view in [self.appStrip collectionView].subviews){
+		if([view isMemberOfClass:%c(CKBrowserPluginCell)]){
+			CKBrowserPluginCell *cell = (CKBrowserPluginCell*)view;
+			if([cell.plugin respondsToSelector:@selector(containingBundleIdentifier)]){
+				IMBalloonAppExtension *plugin = (IMBalloonAppExtension*)cell.plugin; 
+				if([[plugin containingBundleIdentifier] isEqualToString:@"com.apple.mobileslideshow"]){
+					[cell removeFromSuperview];
+				}
+			}
+		}
+	}
+}
 %end
+
+
+//adjust appbar's collectionview frame for now-removed photo cell ^
+%hook CKBrowserSwitcherFooterView
+-(void)layoutSubviews{
+	%orig;
+
+	//make sure we DON't call this on MsgSwapFooter
+	if([self.superview isMemberOfClass:%c(CKMessageEntryView)]) [self resetScrollPosition];
+}
+
+-(void)resetScrollPosition{	
+	if([self.superview isMemberOfClass:%c(CKMessageEntryView)]){
+		CGRect frame = [self collectionView].frame;
+		[[self collectionView] setFrame:CGRectMake(frame.origin.x-54, frame.origin.y, frame.size.width+54, frame.size.height)];
+	}
+	else{
+		%orig;
+	}
+}
+%end
+
 
 //prevents cell from moving up when entryview expands/shrinks (after a newline is created/deleted)
 %hook CKMessageEntryContentView

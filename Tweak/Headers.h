@@ -17,6 +17,11 @@
 @property (nonatomic,retain) PKHostPlugIn* plugin;   
 @end
 
+@interface IMBalloonAppExtension : NSObject
+@property (nonatomic,retain) NSString* containingBundleIdentifier;   
+-(NSString *)containingBundleIdentifier;
+@end
+
 @interface CKBalloonPluginManager : NSObject
 +(id)sharedInstance;
 @property (nonatomic,readonly) NSArray * visibleDrawerPlugins;      
@@ -36,7 +41,6 @@
 @end
 
 @interface CKBrowserSwitcherFooterView : UIView{
-	//UICollectionView* _collectionView; 
 	UIView* _visibleView;
 	id _animator;
 	UILongPressGestureRecognizer* _longPressRecognizer;
@@ -50,7 +54,9 @@
 @property (nonatomic,retain) CKAppStripLayout * appStripLayout;                     
 @property (assign,nonatomic) BOOL minifiesOnSelection;                
 @property (assign,nonatomic) BOOL isMinifyingOnTranscriptScroll;                 
-@property (assign,nonatomic) double snapshotVerticalOffset;           
+@property (assign,nonatomic) double snapshotVerticalOffset;        
+-(UICollectionView*)collectionView;   
+-(void)resetScrollPosition;
 @end
 
 @interface CKEntryViewButton : UIButton //: UIView (iOS13) -- : UIButton (iOS12)
