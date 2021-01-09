@@ -17,7 +17,7 @@
     CKBrowserPluginCell *cell = (CKBrowserPluginCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"photosCell" forIndexPath:indexPath];
 
 	//Check if device is running a version below iOS 13 since other method (_updateTraitsIfNecessary) doesn't set plugin image for those versions  
-	if(kCFCoreFoundationVersionNumber < 1600) { 
+	if(!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"13")) { 
 	  [cell setPlugin:((CKBalloonPluginManager*)[%c(CKBalloonPluginManager) sharedInstance]).visibleDrawerPlugins[0]]; 
 	}
 
@@ -30,27 +30,27 @@
 		//make collectionview
 		UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
         self.collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(3,3.5,58,38.5) collectionViewLayout:layout];
-		self.collectionView.backgroundColor = nil;
+		[self.collectionView setBackgroundColor:nil];
 		[self.collectionView setDataSource:self];
 		[self.collectionView setDelegate:self];
-		self.collectionView.scrollEnabled = NO;
+		[self.collectionView setScrollEnabled:NO];
 		[self addSubview:self.collectionView];
 
 		//footer setup
 		MSHookIvar<UICollectionView *>(self, "_collectionView") = self.collectionView;
 		MSHookIvar<UIView *>(self, "_visibleView") = self.collectionView;
-        self.clipsToBounds = YES;
-		self.hideShinyStatus = YES;
-		self.showBorders = YES;
-		self.minifiesOnSelection = YES;
-		self.snapshotVerticalOffset = -0.5;
+        [self setClipsToBounds:YES];
+		[self setHideShinyStatus:YES];
+		[self setShowBorders:YES];
+		[self setMinifiesOnSelection:YES];
+		[self setSnapshotVerticalOffset:-0.5];
 
 		UILongPressGestureRecognizer *newLongPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(appsLongPressed:)];
 		UILongPressGestureRecognizer *newTouchTracker = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(touchTrackerTrackedTouches:)];
 		[newLongPress setView:self.collectionView];
-		newLongPress.delegate = self;
+		[newLongPress setDelegate:self];
 		[newTouchTracker setView:self.collectionView];
-		newTouchTracker.delegate = self;
+		[newTouchTracker setDelegate:self]	;
 		MSHookIvar<UILongPressGestureRecognizer *>(self, "_longPressRecognizer") = newLongPress;
 		MSHookIvar<UILongPressGestureRecognizer *>(self, "_touchTracker") = newTouchTracker;
 	}
@@ -58,7 +58,7 @@
 
 //sets what happens during long press 
 -(void)clickCameraButton:(UILongPressGestureRecognizer*)gesture {
-	if(kCFCoreFoundationVersionNumber < 1600) { //Check if device is running a version below iOS 13 since ckentryviewbutton is different 
+	if(!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"13")) { //Check if device is running a version below iOS 13 since ckentryviewbutton is different 
         if (gesture.state == UIGestureRecognizerStateBegan) {
             [self.cameraButton sendActionsForControlEvents:UIControlEventTouchUpInside]; 
         }

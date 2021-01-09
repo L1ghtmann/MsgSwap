@@ -55,9 +55,9 @@
 
 	MsgSwapFooter *footer = [((MsgSwapController*)[%c(MsgSwapController) sharedInstance]) footer];
 
-	footer.appStripLayout = self.appStrip.appStripLayout;
-	footer.delegate = self;
-	footer.dataSource = self.appStrip.dataSource;
+	[footer setAppStripLayout:self.appStrip.appStripLayout];
+	[footer setDelegate:self];
+	[footer setDataSource:self.appStrip.dataSource];
 	footer.cameraButton = self.photoButton;//for easier access w gesture below V
 
 	//adds longpress gesture to activate cameraButton (that was replaced w photos cell)
@@ -72,11 +72,13 @@
 -(void)updateTextViewsForShouldHideCaret:(BOOL)arg1 {
 	%orig;
 
+	MsgSwapFooter* footer = [((MsgSwapController*)[%c(MsgSwapController) sharedInstance]) footer];
+
 	if(self.arrowButton.alpha == 1){
-		[((MsgSwapController*)[%c(MsgSwapController) sharedInstance]) footer].hidden = YES;
+		[footer setHidden:YES];
 	}
-	if(self.arrowButton.alpha == 0){
-		[((MsgSwapController*)[%c(MsgSwapController) sharedInstance]) footer].hidden = NO;
+	else if(self.arrowButton.alpha == 0){
+		[footer setHidden:NO];	
 	}
 }
 
@@ -124,8 +126,10 @@
 %hook CKMessageEntryContentView
 -(void)layoutSubviews{
 	%orig;
-	
-	CGRect frame = [((MsgSwapController*)[%c(MsgSwapController) sharedInstance]) footer].frame;
-	[((MsgSwapController*)[%c(MsgSwapController) sharedInstance]) footer].frame = CGRectMake(frame.origin.x, (self.frame.size.height-35), frame.size.width, frame.size.height);
+
+	MsgSwapFooter* footer = [((MsgSwapController*)[%c(MsgSwapController) sharedInstance]) footer];
+
+	CGRect frame = footer.frame;
+	[footer setFrame:CGRectMake(frame.origin.x, (self.frame.size.height-35), frame.size.width, frame.size.height)];
 }
 %end
