@@ -2,7 +2,7 @@
 
 @implementation MsgSwapController
 
-+ (MsgSwapController*)sharedInstance {
++(instancetype)sharedInstance{
 	static dispatch_once_t p = 0;
     __strong static MsgSwapController* sharedInstance = nil;
     dispatch_once(&p, ^{
@@ -11,7 +11,7 @@
     return sharedInstance;
 }
 
-- (MsgSwapFooter*)footer {
+-(MsgSwapFooter *)footer{
 	static MsgSwapFooter* footer = nil;
 	if (!footer) {
 		footer = [[MsgSwapFooter alloc] initWithFrame:CGRectMake(0,0,64.5,39.5)];

@@ -2,7 +2,7 @@
 
 @implementation MsgSwapFooter
 
-//Tells collectionview we only want 1 cell (for some reason returning 1 makes 2 cells, but returning 2 makes 1??)
+// tells collectionview we only want 1 cell (for some reason returning 1 makes 2 cells, but returning 2 makes 1??)
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
     return 2;
 }
@@ -11,12 +11,12 @@
     return CGSizeMake(52, 38);
 }
 
-// The cell that is returned must be retrieved from a call to -dequeueReusableCellWithReuseIdentifier:forIndexPath:
+// the cell that is returned must be retrieved from a call to -dequeueReusableCellWithReuseIdentifier:forIndexPath:
 - (CKBrowserPluginCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{    
     [collectionView registerClass:%c(CKBrowserPluginCell) forCellWithReuseIdentifier:@"photosCell"];
     CKBrowserPluginCell *cell = (CKBrowserPluginCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"photosCell" forIndexPath:indexPath];
 
-	//Check if device is running a version below iOS 13 since other method (_updateTraitsIfNecessary) doesn't set plugin image for those versions  
+	// check if device is running a version below iOS 13 since other method (_updateTraitsIfNecessary) doesn't set plugin image for those versions  
 	if(!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"13")) { 
 	  [cell setPlugin:((CKBalloonPluginManager*)[%c(CKBalloonPluginManager) sharedInstance]).visibleDrawerPlugins[0]]; 
 	}
@@ -27,7 +27,7 @@
 
 -(void)didMoveToWindow{
 	if(!self.collectionView){
-		//make collectionview
+		// collectionview setup
 		UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
         self.collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(3,3.5,58,38.5) collectionViewLayout:layout];
 		[self.collectionView setBackgroundColor:nil];
@@ -36,29 +36,19 @@
 		[self.collectionView setScrollEnabled:NO];
 		[self addSubview:self.collectionView];
 
-		//footer setup
-		MSHookIvar<UICollectionView *>(self, "_collectionView") = self.collectionView;
-		MSHookIvar<UIView *>(self, "_visibleView") = self.collectionView;
+		// footer setup
         [self setClipsToBounds:YES];
 		[self setHideShinyStatus:YES];
 		[self setShowBorders:YES];
 		[self setMinifiesOnSelection:YES];
 		[self setSnapshotVerticalOffset:-0.5];
-
-		UILongPressGestureRecognizer *newLongPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(appsLongPressed:)];
-		UILongPressGestureRecognizer *newTouchTracker = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(touchTrackerTrackedTouches:)];
-		[newLongPress setView:self.collectionView];
-		[newLongPress setDelegate:self];
-		[newTouchTracker setView:self.collectionView];
-		[newTouchTracker setDelegate:self]	;
-		MSHookIvar<UILongPressGestureRecognizer *>(self, "_longPressRecognizer") = newLongPress;
-		MSHookIvar<UILongPressGestureRecognizer *>(self, "_touchTracker") = newTouchTracker;
 	}
 }
 
-//sets what happens during long press 
+// respond to longpress 
 -(void)clickCameraButton:(UILongPressGestureRecognizer*)gesture {
-	if(!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"13")) { //Check if device is running a version below iOS 13 since ckentryviewbutton is different 
+	//Check if device is running a version below iOS 13 since ckentryviewbutton is different 
+	if(!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"13")) { 
         if (gesture.state == UIGestureRecognizerStateBegan) {
             [self.cameraButton sendActionsForControlEvents:UIControlEventTouchUpInside]; 
         }

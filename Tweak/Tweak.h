@@ -3,17 +3,7 @@
 //https://stackoverflow.com/a/5337804
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 
-@interface UICollectionView (Private) 
-@property (assign,nonatomic) id dataSource;    
-@property (assign,nonatomic) id delegate;      
-@end
-
-@interface UILongPressGestureRecognizer (Private)
--(void)setView:(UIView *)arg1;
-@end
-
 @interface PKHostPlugIn : NSObject
-@property (readonly) BOOL active; 
 @end
 
 @interface IMBalloonPlugin : NSObject 
@@ -22,7 +12,6 @@
 
 @interface IMBalloonAppExtension : NSObject
 @property (nonatomic,retain) NSString* containingBundleIdentifier;   
--(NSString *)containingBundleIdentifier;
 @end
 
 @interface CKBalloonPluginManager : NSObject
@@ -34,21 +23,14 @@
 @end
 
 @interface CKBrowserPluginCell : UICollectionViewCell
--(void)setSelected:(BOOL)arg1 ;
-@property (nonatomic,retain) IMBalloonPlugin * plugin;    
--(void)setPlugin:(IMBalloonPlugin *)arg1 ;
-@property (nonatomic,retain) UIImageView * browserImage;     
+@property (nonatomic,retain) IMBalloonPlugin * plugin;
+-(void)setPlugin:(IMBalloonPlugin *)arg1;
 @end
 
 @interface CKAppStripLayout : UICollectionViewLayout
 @end
 
-@interface CKBrowserSwitcherFooterView : UIView{
-	UIView* _visibleView;
-	id _animator;
-	UILongPressGestureRecognizer* _longPressRecognizer;
-	UILongPressGestureRecognizer* _touchTracker;
-}
+@interface CKBrowserSwitcherFooterView : UIView
 @property (assign,nonatomic) id delegate;        
 @property (assign,nonatomic) id dataSource;     
 @property (assign,nonatomic) BOOL isMagnified;                                         
@@ -59,11 +41,10 @@
 @property (assign,nonatomic) BOOL isMinifyingOnTranscriptScroll;                 
 @property (assign,nonatomic) double snapshotVerticalOffset;        
 -(UICollectionView*)collectionView;   
--(void)resetScrollPosition;
 @end
 
-@interface CKEntryViewButton : UIButton //: UIView (iOS13) -- : UIButton (iOS12)
-@property (nonatomic,retain) UIButton * button; //iOS13
+@interface CKEntryViewButton : UIButton // UIView (iOS 13) || UIButton (iOS 12)
+@property (nonatomic,retain) UIButton * button; // iOS 13
 @end
 
 @interface CKMessageEntryContentView : UIView
@@ -71,7 +52,7 @@
 
 @interface CKMessageEntryView : UIView
 @property (nonatomic,retain) CKEntryViewButton * photoButton;  //camera
-@property (nonatomic,retain) CKEntryViewButton * browserButton; //opens up appstrip
+@property (nonatomic,retain) CKEntryViewButton * browserButton; //toggles appstrip
 @property (nonatomic,retain) CKEntryViewButton * arrowButton;   //caret
 @property (nonatomic,retain) CKBrowserSwitcherFooterView * appStrip;
 @property (nonatomic,retain) UIView * buttonAndTextAreaContainerView; 
