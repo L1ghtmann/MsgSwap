@@ -7,7 +7,7 @@ include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = MsgSwap
 
-MsgSwap_FILES = Tweak/MsgSwapController.m Tweak/MsgSwapFooter.xm Tweak/Tweak.xm
+MsgSwap_FILES = Tweak/MsgSwapFooter.x Tweak/Tweak.xm 
 MsgSwap_PRIVATE_FRAMEWORKS = ChatKit
 MsgSwap_CFLAGS = -fobjc-arc
 
