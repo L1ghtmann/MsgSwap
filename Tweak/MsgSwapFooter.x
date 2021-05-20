@@ -72,6 +72,8 @@
 		[browserImg setImage:[UIImage imageWithContentsOfFile:icons.lastObject]];
 		[browserImg.layer setMasksToBounds:YES];
 		[browserImg.layer setCornerRadius:15];
+		[browserImg.layer setBorderColor:[UIColor systemGray4Color].CGColor];
+		[browserImg.layer setBorderWidth:0.35];
 		[cell addSubview:browserImg];
 		[cell setBrowserImage:browserImg];
 	}
