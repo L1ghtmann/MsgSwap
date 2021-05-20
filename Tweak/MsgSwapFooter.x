@@ -2,8 +2,10 @@
 
 @implementation MsgSwapFooter
 
-- (void)didMoveToWindow{
-	if(!self.collectionView){
+- (instancetype)initWithFrame:(CGRect)frame{
+	self = [super initWithFrame:frame];
+
+	if(self){		
 		// collectionview setup
 		UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
 		self.collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(3,3.5,58,38.5) collectionViewLayout:layout];
@@ -26,8 +28,10 @@
 		[self addGestureRecognizer:longPress];
 
 		// add observer for plugin manager's plugin deactivation notification
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deselectCell) name:@"MsgSwapCell_Deselect" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deselectCell) name:@"deselect" object:nil];
 	}
+
+	return self;
 }
 
 // tells collectionview we only want 1 cell (for some reason returning 1 makes 2 cells, but returning 2 makes 1??)
@@ -40,31 +44,52 @@
     return CGSizeMake(52, 38);
 }
 
-// allows double tapping cell to close the photos plugin
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-   if([collectionView.indexPathsForSelectedItems containsObject:indexPath]) {
-        [collectionView deselectItemAtIndexPath:indexPath animated:NO]; // deselect cell
-		[[CKBalloonPluginManager sharedInstance] prepareForSuspend]; // tell plugin manager to kill plugin
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"MsgSwapCell_SecondTap" object:nil]; // post notification that all is ready	 
-        return NO;
-    }
-
-    return YES;
-}
-
 // the cell that is returned must be retrieved from a call to -dequeueReusableCellWithReuseIdentifier:forIndexPath:
 - (CKBrowserPluginCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{    
     [collectionView registerClass:%c(CKBrowserPluginCell) forCellWithReuseIdentifier:@"photosCell"];
    
     CKBrowserPluginCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"photosCell" forIndexPath:indexPath];
+	
+	// set plugin (doesn't have a link to the browser img, so we'll have to find and set it manually . . .)
+	NSDictionary *plugins = ((IMBalloonPluginManager *)[%c(IMBalloonPluginManager) sharedInstance]).pluginsMap;
+	[cell setPlugin:[plugins objectForKey:@"com.apple.messages.MSMessageExtensionBalloonPlugin"]];
+	
+	// get possible cell icons
+	NSString *path = @"/Applications/MobileSlideShow.app/PlugIns/PhotosMessagesApp.appex/";
+	NSArray *contents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:nil];
+	NSMutableArray *icons = [NSMutableArray new];
+	[contents enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		NSString *filename = (NSString *)obj;
+		NSString *extension = [[filename pathExtension] lowercaseString];
+		if([extension isEqualToString:@"png"]){
+			[icons addObject:[path stringByAppendingPathComponent:filename]];
+		}
+	}];
 
-	// ensure that the plugin manager's array has time to populate 
-	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.001 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-		[cell setPlugin:[CKBalloonPluginManager sharedInstance].visibleDrawerPlugins[0]]; 
-	});
+	// set highest quality cell icon as the browser img 	
+	if(icons.count){
+		UIImageView *browserImg = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:icons.lastObject]];
+		[browserImg setImage:[UIImage imageWithContentsOfFile:icons.lastObject]];
+		[browserImg.layer setMasksToBounds:YES];
+		[browserImg.layer setCornerRadius:15];
+		[cell addSubview:browserImg];
+		[cell setBrowserImage:browserImg];
+	}
 
 	self.cell = cell;
     return cell;
+}
+
+// allows double tapping cell to close the photos plugin
+- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+   if([collectionView.indexPathsForSelectedItems containsObject:indexPath]) {
+        [collectionView deselectItemAtIndexPath:indexPath animated:NO]; // deselect cell
+		[[CKBalloonPluginManager sharedInstance] prepareForSuspend]; // tell plugin manager to kill the plugin
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"secondTap" object:nil]; 	 
+        return NO;
+    }
+
+    return YES;
 }
 
 // deselect cell on notification from plugin manager that the cell was deactivated 
