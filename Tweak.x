@@ -1,8 +1,11 @@
-#import "MsgSwapFooter.h"
+//
+//	Tweak.x
+//	MsgSwap
+//
+//	Created by Lightmann during COVID-19
+//
 
-// Lightmann
-// Made during COVID-19
-// MsgSwap
+#import "MsgSwapFooter.h"
 
 %hook CKMessageEntryView
 %property (nonatomic, retain) MsgSwapFooter *footer;
@@ -35,7 +38,7 @@
 -(void)setPhotoButton:(CKEntryViewButton *)photoButton {
 	%orig;
 
-	[self.footer setCameraButton:photoButton];  
+	[self.footer setCameraButton:photoButton];
 }
 
 // hide and unhide cell/photoButton at appStrip presentation/dismissal
@@ -56,19 +59,19 @@
 	}
 }
 
-// get state of caret and act accordingly 
+// get state of caret and act accordingly
 -(BOOL)shouldEntryViewBeExpandedLayout{
 	BOOL orig = %orig;
 	if(self.caretState != orig){
-		if(orig) [[NSNotificationCenter defaultCenter] postNotificationName:@"Gromit" object:nil]; 	 
-		else [[NSNotificationCenter defaultCenter] postNotificationName:@"Wallace" object:nil]; 	 
+		if(orig) [[NSNotificationCenter defaultCenter] postNotificationName:@"Gromit" object:nil];
+		else [[NSNotificationCenter defaultCenter] postNotificationName:@"Wallace" object:nil];
 		[self setCaretState:orig];
 	}
 	return orig;
 }
 
 %new
-// hide or show cell depending on presence (or lack thereof) of the caret 
+// hide or show cell depending on presence (or lack thereof) of the caret
 -(void)unleashTheRabbit{
 	// no animation because we want this to be quick
 	[self.footer.cell setAlpha:0];
@@ -91,7 +94,7 @@
 // post notification to deselect cell when the plugin is deactivated
 %hook CKBalloonPluginManager
 -(void)updateSnapshotForBrowserViewController:(id)arg1 currentBounds:(CGRect)arg2 {
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"deselect" object:nil];	 
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"deselect" object:nil];
 
 	%orig;
 }
